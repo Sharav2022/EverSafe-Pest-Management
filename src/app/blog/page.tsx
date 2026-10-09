@@ -7,7 +7,7 @@ import { blogPosts } from "@/data/blog";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Pest control tips, seasonal guides, and prevention advice from the EverSafe Pest Management team.",
+    "Pest control tips, seasonal guides, and prevention advice from the Ever Safe Pest Management team.",
 };
 
 export default function BlogPage() {

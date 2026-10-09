@@ -17,7 +17,7 @@ export const testimonials: Testimonial[] = [
     name: "Amit Singh",
     role: "Warehouse Supervisor",
     quote:
-      "We switched to EverSafe for our warehouse and haven't looked back. Their digital reports make our health inspections effortless, and their technicians always work around our shift schedule.",
+      "We switched to Ever Safe for our warehouse and haven't looked back. Their digital reports make our health inspections effortless, and their technicians always work around our shift schedule.",
     rating: 5,
   },
   {
@@ -31,7 +31,7 @@ export const testimonials: Testimonial[] = [
     name: "Kathryn Murphy",
     role: "Property Manager",
     quote:
-      "Managing pest control across twelve units used to be a nightmare. EverSafe's account manager keeps every property on schedule and tenants have stopped complaining entirely.",
+      "Managing pest control across twelve units used to be a nightmare. Ever Safe's account manager keeps every property on schedule and tenants have stopped complaining entirely.",
     rating: 5,
   },
 ];

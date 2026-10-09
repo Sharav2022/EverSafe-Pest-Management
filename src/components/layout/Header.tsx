@@ -13,7 +13,7 @@ export function Header() {
             <Bug className="h-6 w-6" strokeWidth={2} />
           </span>
           <span className="font-heading text-xl font-extrabold text-white">
-            EverSafe
+            Ever Safe
           </span>
         </Link>
 

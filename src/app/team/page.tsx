@@ -8,7 +8,7 @@ import { team } from "@/data/team";
 export const metadata: Metadata = {
   title: "Our Team",
   description:
-    "Meet the licensed and certified pest control technicians behind EverSafe Pest Management.",
+    "Meet the licensed and certified pest control technicians behind Ever Safe Pest Management.",
 };
 
 export default function TeamPage() {

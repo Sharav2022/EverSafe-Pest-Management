@@ -41,7 +41,7 @@ export function Footer() {
                 <Bug className="h-5 w-5" strokeWidth={2} />
               </span>
               <span className="font-heading text-lg font-extrabold">
-                EverSafe
+                Ever Safe
               </span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
@@ -147,7 +147,7 @@ export function Footer() {
           <p>
             Copyright © {year}{" "}
             <Link href="/" className="text-white hover:text-brand-lime">
-              EverSafe
+              Ever Safe
             </Link>
             . All rights reserved.
           </p>

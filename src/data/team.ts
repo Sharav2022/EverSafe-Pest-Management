@@ -23,7 +23,7 @@ export const team: TeamMember[] = [
     slug: "michael-brown",
     name: "Michael Brown",
     role: "Chief Executive Officer",
-    bio: "Michael founded EverSafe to bring transparent, eco-conscious pest control to homes and businesses across the region.",
+    bio: "Michael founded Ever Safe to bring transparent, eco-conscious pest control to homes and businesses across the region.",
     image: "team-2",
     social: [
       { label: "LinkedIn", href: "#" },
@@ -34,7 +34,7 @@ export const team: TeamMember[] = [
     slug: "amit-singh",
     name: "Amit Singh",
     role: "Field Operations Supervisor",
-    bio: "Amit oversees technician training and quality control, ensuring every treatment meets EverSafe's safety standard.",
+    bio: "Amit oversees technician training and quality control, ensuring every treatment meets Ever Safe's safety standard.",
     image: "team-3",
     social: [
       { label: "LinkedIn", href: "#" },

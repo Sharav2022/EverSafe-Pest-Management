@@ -37,7 +37,7 @@ export function OurStory() {
             align="left"
           />
           <p className="mt-6 text-sm leading-relaxed text-brand-ink/65">
-            EverSafe started with a simple idea: pest control should protect
+            Ever Safe started with a simple idea: pest control should protect
             your family and property without compromising on safety. What
             began as a two-person team has grown into a certified network of
             technicians serving thousands of homes and businesses.

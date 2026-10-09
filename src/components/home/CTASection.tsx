@@ -11,7 +11,7 @@ export function CTASection() {
         </h2>
         <p className="max-w-xl text-white/70">
           Get a free, no-obligation inspection and quote from a licensed
-          EverSafe technician today.
+          Ever Safe technician today.
         </p>
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <Button href="/contact-us" size="lg">

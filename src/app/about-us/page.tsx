@@ -10,7 +10,7 @@ import { CTASection } from "@/components/home/CTASection";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about EverSafe Pest Management's mission, values, and the certified team protecting homes and businesses.",
+    "Learn about Ever Safe Pest Management's mission, values, and the certified team protecting homes and businesses.",
 };
 
 const values = [

@@ -9,7 +9,7 @@ import { services } from "@/data/services";
 export const metadata: Metadata = {
   title: "Our Services",
   description:
-    "Explore EverSafe Pest Management's residential, commercial, termite, rodent, bed bug, and mosquito control services.",
+    "Explore Ever Safe Pest Management's residential, commercial, termite, rodent, bed bug, and mosquito control services.",
 };
 
 export default function ServicesPage() {

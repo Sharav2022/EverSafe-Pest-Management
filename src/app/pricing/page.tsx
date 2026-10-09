@@ -9,7 +9,7 @@ import { pricingPlans } from "@/data/pricing";
 export const metadata: Metadata = {
   title: "Pricing Plans",
   description:
-    "Transparent, flexible pricing plans for residential and commercial pest control from EverSafe Pest Management.",
+    "Transparent, flexible pricing plans for residential and commercial pest control from Ever Safe Pest Management.",
 };
 
 const faqs = [

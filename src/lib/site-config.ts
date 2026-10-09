@@ -1,10 +1,10 @@
 // Central site metadata used for SEO, sitemap, robots, and structured data.
 // Update NEXT_PUBLIC_SITE_URL once the production domain is chosen.
 export const siteConfig = {
-  name: "EverSafe Pest Management",
+  name: "Ever Safe Pest Management",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.eversafepest.com",
   description:
-    "EverSafe Pest Management delivers eco-friendly, certified pest control for homes and businesses — residential, commercial, termite, rodent, bed bug and mosquito treatments.",
+    "Ever Safe Pest Management delivers eco-friendly, certified pest control for homes and businesses — residential, commercial, termite, rodent, bed bug and mosquito treatments.",
   phone: "+1 437-833-9181",
   phoneHref: "tel:+14378339181",
   email: "hello@eversafepest.com",

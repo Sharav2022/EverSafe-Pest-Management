@@ -21,12 +21,12 @@ const body = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "EverSafe Pest Management | Safe & Reliable Pest Control",
-    template: "%s | EverSafe Pest Management",
+    default: "Ever Safe Pest Management | Safe & Reliable Pest Control",
+    template: "%s | Ever Safe Pest Management",
   },
   description: siteConfig.description,
   keywords: [
-    "eversafe",
+    "ever safe pest management",
     "eversafe pest management",
     "pest control Mississauga",
     "pest control near me",
@@ -42,12 +42,12 @@ export const metadata: Metadata = {
     type: "website",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: "EverSafe Pest Management | Safe & Reliable Pest Control",
+    title: "Ever Safe Pest Management | Safe & Reliable Pest Control",
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "EverSafe Pest Management | Safe & Reliable Pest Control",
+    title: "Ever Safe Pest Management | Safe & Reliable Pest Control",
     description: siteConfig.description,
   },
   robots: {

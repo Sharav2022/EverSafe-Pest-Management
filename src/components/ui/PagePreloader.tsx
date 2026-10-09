@@ -24,7 +24,7 @@ export function PagePreloader() {
         fading ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      <Loader label="EverSafe" />
+      <Loader label="Ever Safe" />
     </div>
   );
 }

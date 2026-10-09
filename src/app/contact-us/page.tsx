@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Request a free pest control inspection or get in touch with EverSafe Pest Management.",
+    "Request a free pest control inspection or get in touch with Ever Safe Pest Management.",
 };
 
 const info = [

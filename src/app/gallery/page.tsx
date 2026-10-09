@@ -6,7 +6,7 @@ import { CTASection } from "@/components/home/CTASection";
 export const metadata: Metadata = {
   title: "Gallery",
   description:
-    "See EverSafe Pest Management technicians at work across residential and commercial properties.",
+    "See Ever Safe Pest Management technicians at work across residential and commercial properties.",
 };
 
 const gallery = [
