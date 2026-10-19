@@ -59,6 +59,9 @@ sends a one-time **"Activate Form"** email to that inbox; nothing is delivered
 until someone clicks it. Until then, visitors see the email/phone fallback, so
 enquiries are not lost.
 
+Each contact enquiry also sends the visitor a generic acknowledgement email
+(text in `contactAutoReply`, `src/lib/forms.ts`). Newsletter sign-ups get none.
+
 To use a different service later, set `CONTACT_FORM_ENDPOINT` and/or
 `NEWSLETTER_ENDPOINT` in the hosting dashboard to any URL that accepts a JSON
 `POST`; these override FormSubmit. No personal data is written to server logs.

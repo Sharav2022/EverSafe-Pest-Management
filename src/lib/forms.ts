@@ -58,6 +58,21 @@ export function validateContact(input: Record<string, unknown>): {
  */
 const DEFAULT_ENDPOINT = `https://formsubmit.co/ajax/${siteConfig.email}`;
 
+/** Generic acknowledgement emailed to the visitor after a contact enquiry. */
+export const contactAutoReply = [
+  "Thank you for contacting Ever Safe Pest Management.",
+  "",
+  "We've received your enquiry, and a member of our team will be in touch shortly — we typically respond within one business day.",
+  "",
+  `If your pest issue is urgent, please call us on ${siteConfig.phone} (${siteConfig.hours[0].days}, ${siteConfig.hours[0].time}).`,
+  "",
+  `To add anything to your enquiry, email us at ${siteConfig.email}.`,
+  "",
+  "Ever Safe Pest Management",
+  `${siteConfig.address.streetAddress}, ${siteConfig.address.addressLocality}, ${siteConfig.address.addressRegion} ${siteConfig.address.postalCode}`,
+  siteConfig.url.replace(/^https?:\/\//, ""),
+].join("\n");
+
 /**
  * Forwards a submission as JSON to the endpoint in the given env variable
  * (e.g. a Formspree, Zapier or CRM webhook URL), falling back to FormSubmit.
@@ -65,10 +80,10 @@ const DEFAULT_ENDPOINT = `https://formsubmit.co/ajax/${siteConfig.email}`;
  */
 export async function forwardSubmission(
   envName: "CONTACT_FORM_ENDPOINT" | "NEWSLETTER_ENDPOINT",
-  payload: Record<string, unknown> & { subject: string }
+  payload: Record<string, unknown> & { subject: string; autoReply?: string }
 ): Promise<"sent" | "unconfigured" | "failed"> {
   const endpoint = process.env[envName] || DEFAULT_ENDPOINT;
-  const { subject, ...fields } = payload;
+  const { subject, autoReply, ...fields } = payload;
 
   try {
     const res = await fetch(endpoint, {
@@ -80,7 +95,14 @@ export async function forwardSubmission(
         Origin: siteConfig.url,
         Referer: `${siteConfig.url}/contact-us`,
       },
-      body: JSON.stringify({ ...fields, _subject: subject, _template: "table", _captcha: "false" }),
+      body: JSON.stringify({
+        ...fields,
+        _subject: subject,
+        _template: "table",
+        _captcha: "false",
+        // FormSubmit emails this text to the address in the `email` field.
+        ...(autoReply && { _autoresponse: autoReply }),
+      }),
       cache: "no-store",
     });
     // FormSubmit answers 200 with { success: "false" } when not yet activated.

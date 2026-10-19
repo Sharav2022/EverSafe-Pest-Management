@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { forwardSubmission, validateContact } from "@/lib/forms";
+import { contactAutoReply, forwardSubmission, validateContact } from "@/lib/forms";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
   const result = await forwardSubmission("CONTACT_FORM_ENDPOINT", {
     ...data,
     subject: `Website enquiry: ${data.service || "General"} — ${data.name}`,
+    autoReply: contactAutoReply,
     source: "eversafepest.com contact form",
     submittedAt: new Date().toISOString(),
   });
