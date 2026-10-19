@@ -1,73 +1,69 @@
 import type { Metadata } from "next";
-import { HelpCircle } from "lucide-react";
+import { Phone } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
-import { SectionTag } from "@/components/ui/Badge";
+import { Eyebrow } from "@/components/ui/SectionHeading";
+import { Disclosure } from "@/components/ui/Disclosure";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { CTASection } from "@/components/home/CTASection";
 import { pricingPlans } from "@/data/pricing";
+import { pricingFaqs } from "@/data/faqs";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Pricing Plans",
   description:
     "Transparent, flexible pricing plans for residential and commercial pest control from Ever Safe Pest Management.",
+  alternates: { canonical: "/pricing" },
 };
-
-const faqs = [
-  {
-    question: "Is there a contract or commitment?",
-    answer:
-      "No long-term contracts. Monthly plans can be paused or cancelled anytime after the initial service.",
-  },
-  {
-    question: "What's included in the free inspection?",
-    answer:
-      "A full interior and exterior walkthrough, pest identification, and a tailored treatment recommendation.",
-  },
-  {
-    question: "Do you guarantee your work?",
-    answer:
-      "Yes — every plan includes a re-service guarantee if pests return between scheduled visits.",
-  },
-];
 
 export default function PricingPage() {
   return (
     <>
-      <PageHero title="Pricing Plans" crumb="Pricing" />
+      <PageHero
+        eyebrow="Pricing"
+        title="Clear plans for every level of protection."
+        intro="No hidden fees. Start with a single targeted visit, or choose ongoing protection for the whole property. Every plan includes a satisfaction guarantee and free re-service between visits."
+        crumbs={[{ label: "Pricing" }]}
+      />
 
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionTag
-            eyebrow="Pricing"
-            title="Customized pricing plans for your pest control needs"
-            tone="light"
-            description="No hidden fees. Every plan includes a satisfaction guarantee and free re-service between visits."
-          />
-          <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {pricingPlans.map((plan) => (
-              <PricingCard key={plan.name} plan={plan} />
+      <section className="section-y bg-ivory">
+        <div className="shell">
+          <h2 className="sr-only">Plans</h2>
+          <ul className="grid items-stretch gap-6 lg:grid-cols-3 lg:gap-5 lg:py-6">
+            {pricingPlans.map((plan, i) => (
+              <li key={plan.name} data-reveal style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}>
+                <PricingCard plan={plan} index={i} />
+              </li>
             ))}
-          </div>
+          </ul>
+          <p className="mx-auto mt-14 max-w-2xl text-center text-sm leading-relaxed text-muted">
+            Not sure which plan fits your property?{" "}
+            <a href={siteConfig.phoneHref} className="font-semibold text-forest underline underline-offset-4">
+              Call {siteConfig.phone}
+            </a>
+            .
+          </p>
         </div>
       </section>
 
-      <section className="bg-brand-cream py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <SectionTag eyebrow="FAQs" title="Common pricing questions" tone="light" />
-          <div className="mt-10 space-y-4">
-            {faqs.map((faq) => (
-              <div
-                key={faq.question}
-                className="flex gap-4 rounded-2xl border border-brand-ink/10 bg-white p-6"
-              >
-                <HelpCircle className="mt-0.5 h-5 w-5 shrink-0 text-brand-lime-dark" />
-                <div>
-                  <h3 className="font-heading font-bold text-brand-ink">
-                    {faq.question}
-                  </h3>
-                  <p className="mt-1 text-sm text-brand-ink/60">{faq.answer}</p>
-                </div>
-              </div>
+      <section className="section-y bg-white">
+        <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-4" data-reveal>
+            <Eyebrow>FAQs</Eyebrow>
+            <h2 className="display-md mt-6 text-forest">Common pricing questions</h2>
+            <a
+              href={siteConfig.phoneHref}
+              className="mt-8 inline-flex min-h-12 items-center gap-3 font-semibold text-forest underline decoration-line-strong underline-offset-[6px]"
+            >
+              <Phone aria-hidden="true" className="h-4 w-4" />
+              Ask us directly
+            </a>
+          </div>
+          <div className="border-t border-line lg:col-span-7 lg:col-start-6">
+            {pricingFaqs.map((faq) => (
+              <Disclosure key={faq.question} question={faq.question}>
+                {faq.answer}
+              </Disclosure>
             ))}
           </div>
         </div>

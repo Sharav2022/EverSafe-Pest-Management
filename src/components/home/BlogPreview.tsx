@@ -1,32 +1,34 @@
-import { SectionTag } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { BlogCard } from "@/components/blog/BlogCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ArrowLink } from "@/components/ui/Button";
+import { ArticleCard, ArticleRow } from "@/components/blog/ArticleCards";
 import { blogPosts } from "@/data/blog";
 
 export function BlogPreview() {
-  return (
-    <section className="bg-brand-cream py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionTag
-          eyebrow="Knowledge Center"
-          title="Stay updated with our pest control knowledge center"
-          tone="light"
-        />
+  const [lead, ...rest] = blogPosts;
+  const list = rest.slice(0, 3);
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.slice(0, 3).map((post) => (
-            <BlogCard key={post.slug} post={post} />
-          ))}
+  return (
+    <section className="section-y bg-ivory">
+      <div className="shell">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHeading
+            eyebrow="Knowledge centre"
+            title="Practical guidance, season by season."
+          />
+          <ArrowLink href="/blog" className="shrink-0 lg:mb-3">
+            Visit the blog
+          </ArrowLink>
         </div>
 
-        <div className="mt-12 flex justify-center">
-          <Button
-            href="/blog"
-            variant="ghost"
-            className="border border-brand-ink/15 text-brand-ink hover:bg-brand-ink/5"
-          >
-            Visit Our Blog
-          </Button>
+        <div className="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-6">
+            <ArticleCard post={lead} aspect="aspect-[4/3] lg:aspect-[5/4]" />
+          </div>
+          <div className="divide-y divide-line border-y border-line lg:col-span-6 lg:self-start">
+            {list.map((post) => (
+              <ArticleRow key={post.slug} post={post} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

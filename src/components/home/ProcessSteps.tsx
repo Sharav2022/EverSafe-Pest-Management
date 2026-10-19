@@ -1,59 +1,82 @@
-import { SectionTag } from "@/components/ui/Badge";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { cn } from "@/lib/utils";
 
-const steps = [
+export const processSteps = [
   {
-    number: "01",
     title: "Inspect",
     description:
-      "A certified technician inspects your property to identify pests, entry points, and risk areas.",
+      "A technician inspects your property to identify pests, entry points, and risk areas.",
   },
   {
-    number: "02",
     title: "Plan",
     description:
       "We design a treatment plan tailored to your property, pets, and the severity of the infestation.",
   },
   {
-    number: "03",
     title: "Treat",
     description:
-      "Eco-friendly interior and exterior treatments are applied with precision, not guesswork.",
+      "Interior and exterior treatments are applied with precision, not guesswork.",
   },
   {
-    number: "04",
     title: "Protect",
     description:
       "Scheduled follow-ups and monitoring keep your property protected long after the first visit.",
   },
 ];
 
-export function ProcessSteps() {
+/** Editorial four-stage timeline with oversized numerals and a drawn connector. */
+export function ProcessSteps({
+  tone = "light",
+  heading = true,
+}: {
+  tone?: "light" | "sage";
+  heading?: boolean;
+}) {
   return (
-    <section className="bg-brand-cream py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionTag
-          eyebrow="Our Process"
-          title="Our pest control process for safe & effective results"
-          tone="light"
-        />
+    <section className={cn("section-y", tone === "sage" ? "bg-sage-100" : "bg-ivory-200")}>
+      <div className="shell">
+        {heading && (
+          <SectionHeading
+            eyebrow="Our process"
+            title={
+              <>
+                Inspect. Plan. Treat.{" "}
+                <span className="text-copper">Protect.</span>
+              </>
+            }
+            intro="The same four stages shape every residential and commercial program, so you always know what happens next."
+          />
+        )}
 
-        <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, i) => (
-            <div key={step.number} className="relative">
-              <span className="font-heading text-6xl font-extrabold text-brand-ink/10">
-                {step.number}
-              </span>
-              <h3 className="font-heading -mt-4 text-xl font-bold text-brand-ink">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-brand-ink/60">
-                {step.description}
-              </p>
-              {i < steps.length - 1 && (
-                <span className="absolute right-[-16px] top-6 hidden h-px w-8 bg-brand-ink/15 lg:block" />
-              )}
-            </div>
-          ))}
+        <div className="relative mt-16 lg:mt-24">
+          <span
+            aria-hidden="true"
+            data-reveal-line
+            className="absolute left-0 right-0 top-[5px] hidden h-px bg-forest/25 lg:block"
+          />
+          <ol className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {processSteps.map((step, i) => (
+              <li
+                key={step.title}
+                data-reveal
+                style={{ "--reveal-delay": `${150 + i * 120}ms` } as React.CSSProperties}
+                className="relative"
+              >
+                <span className="numeral block text-[5.5rem] text-forest/20 sm:text-[6.5rem] lg:mt-10">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute left-0 top-0 hidden h-2.5 w-2.5 rounded-full bg-copper ring-4 lg:block",
+                    tone === "sage" ? "ring-sage-100" : "ring-ivory-200"
+                  )}
+                />
+                <h3 className="display-sm mt-4 text-forest">{step.title}</h3>
+                <p className="mt-3 max-w-xs leading-relaxed text-muted">{step.description}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

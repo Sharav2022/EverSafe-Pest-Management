@@ -1,69 +1,75 @@
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import type { PricingPlan } from "@/data/pricing";
+import { cn } from "@/lib/utils";
 
-export function PricingCard({ plan }: { plan: PricingPlan }) {
+export function cadenceLabel(cadence: string) {
+  return cadence.replace("/", "per").trim();
+}
+
+export function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
+  const featured = Boolean(plan.popular);
   return (
-    <div
+    <article
+      aria-labelledby={`plan-${plan.name}`}
       className={cn(
-        "relative flex flex-col rounded-3xl border p-8",
-        plan.popular
-          ? "border-brand-lime bg-brand-dark text-white shadow-2xl shadow-brand-lime/10"
-          : "border-brand-ink/10 bg-white text-brand-ink"
+        "relative flex h-full flex-col rounded-[1.75rem] p-8 sm:p-10",
+        featured
+          ? "bg-evergreen text-ivory shadow-[0_40px_80px_-40px_rgb(11_32_33/0.7)] lg:-my-6 lg:py-16"
+          : "border border-line bg-white text-charcoal"
       )}
     >
-      {plan.popular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-lime px-4 py-1 font-heading text-xs font-bold text-brand-ink">
-          Most Popular
+      <div className="flex items-start justify-between gap-4">
+        <span className={cn("font-display text-xl", featured ? "text-copper-light" : "text-copper-ink")}>
+          {String(index + 1).padStart(2, "0")}
         </span>
-      )}
-
-      <h3 className="font-heading text-xl font-bold">{plan.name}</h3>
-      <p
-        className={cn(
-          "mt-2 text-sm",
-          plan.popular ? "text-white/60" : "text-brand-ink/60"
+        {featured && (
+          <span className="rounded-full bg-ivory/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sage">
+            Most popular
+          </span>
         )}
+      </div>
+
+      <h3
+        id={`plan-${plan.name}`}
+        className={cn("display-sm mt-6", featured ? "text-ivory" : "text-forest")}
       >
+        {plan.name}
+      </h3>
+      <p className={cn("mt-3 leading-relaxed", featured ? "text-ivory/75" : "text-muted")}>
         {plan.description}
       </p>
 
-      <div className="mt-6 flex items-baseline gap-1">
-        <span className="font-heading text-4xl font-extrabold">
+      <p className={cn("mt-8 flex items-baseline gap-2 border-y py-6", featured ? "border-ivory/15" : "border-line")}>
+        <span className={cn("numeral text-[4rem]", featured ? "text-ivory" : "text-forest")}>
           {plan.price}
         </span>
-        <span
-          className={cn(
-            "text-sm",
-            plan.popular ? "text-white/50" : "text-brand-ink/50"
-          )}
-        >
-          {plan.cadence}
+        <span className={cn("text-[0.9375rem] font-semibold", featured ? "text-ivory/75" : "text-muted")}>
+          {cadenceLabel(plan.cadence)}
         </span>
-      </div>
+      </p>
 
-      <ul className="mt-6 flex-1 space-y-3">
+      <ul className="mt-8 flex-1 space-y-3.5">
         {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2.5 text-sm">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-lime" />
-            <span className={plan.popular ? "text-white/80" : "text-brand-ink/75"}>
-              {feature}
-            </span>
+          <li key={feature} className="flex items-start gap-3 leading-snug">
+            <Check
+              aria-hidden="true"
+              className={cn("mt-0.5 h-4 w-4 shrink-0", featured ? "text-copper-light" : "text-copper")}
+              strokeWidth={2.25}
+            />
+            <span className={featured ? "text-ivory/90" : "text-charcoal"}>{feature}</span>
           </li>
         ))}
       </ul>
 
       <Button
         href="/contact-us"
-        variant={plan.popular ? "primary" : "outline"}
-        className={cn(
-          "mt-8 w-full justify-center",
-          !plan.popular && "border-brand-ink/20 text-brand-ink hover:bg-brand-ink/5"
-        )}
+        variant={featured ? "light" : "outline"}
+        size="lg"
+        className="mt-10 w-full"
       >
         Choose {plan.name}
       </Button>
-    </div>
+    </article>
   );
 }

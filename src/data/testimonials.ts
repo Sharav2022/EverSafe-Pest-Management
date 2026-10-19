@@ -1,3 +1,7 @@
+// ON HOLD — not rendered anywhere on the site.
+// These reviews share their names with the team and blog authors, so their
+// authenticity and approval could not be confirmed. Replace with genuine,
+// approved customer reviews (with permission) before displaying any of them.
 export type Testimonial = {
   name: string;
   role: string;

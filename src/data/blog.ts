@@ -1,3 +1,5 @@
+import type { PhotoKey } from "@/lib/photos";
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -7,7 +9,7 @@ export type BlogPost = {
   date: string;
   readTime: string;
   author: string;
-  image: string;
+  photo: PhotoKey;
 };
 
 export const blogPosts: BlogPost[] = [
@@ -18,7 +20,7 @@ export const blogPosts: BlogPost[] = [
       "Pest control doesn't have to mean harsh chemicals. Here's how modern, eco-friendly treatments protect your home without putting your family or pets at risk.",
     content: [
       "Pest control has evolved far beyond blanket chemical spraying. Today's eco-friendly programs combine plant-based active ingredients, precise targeting, and mechanical exclusion to solve infestations while keeping households safe.",
-      "Products used in modern residential treatments are EPA-registered and applied in the smallest effective dose, focused on cracks, crevices, and known pest pathways rather than open living spaces.",
+      "Products used in modern residential treatments are registered for use in Canada and applied in the smallest effective dose, focused on cracks, crevices, and known pest pathways rather than open living spaces.",
       "Pairing chemical treatments with sanitation and exclusion work — sealing gaps, fixing screens, removing standing water — reduces how much product is needed over time, which is better for your family, pets, and the environment.",
       "If you have young children, pets, or family members with sensitivities, tell your technician up front. Every plan can be adjusted with pet-safe bait placements and low-odor formulations.",
     ],
@@ -26,7 +28,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-08-18",
     readTime: "4 min read",
     author: "Kristin Watson",
-    image: "blog-eco",
+    photo: "seedlings",
   },
   {
     slug: "5-early-warning-signs-of-a-termite-infestation",
@@ -42,7 +44,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-07-30",
     readTime: "3 min read",
     author: "Amit Singh",
-    image: "blog-termite",
+    photo: "woodlandHouse",
   },
   {
     slug: "how-often-should-you-schedule-professional-pest-control",
@@ -58,7 +60,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-07-12",
     readTime: "3 min read",
     author: "Michael Brown",
-    image: "blog-schedule",
+    photo: "suburbStreet",
   },
   {
     slug: "seasonal-pest-guide-what-to-expect-every-quarter",
@@ -74,7 +76,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-06-22",
     readTime: "5 min read",
     author: "Kathryn Murphy",
-    image: "blog-seasonal",
+    photo: "cabinAutumn",
   },
   {
     slug: "commercial-pest-prevention-protecting-your-business-reputation",
@@ -90,7 +92,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-05-30",
     readTime: "4 min read",
     author: "Michael Brown",
-    image: "blog-commercial",
+    photo: "restaurant",
   },
   {
     slug: "bed-bugs-101-detection-treatment-prevention-tips",
@@ -106,6 +108,20 @@ export const blogPosts: BlogPost[] = [
     date: "2026-05-02",
     readTime: "4 min read",
     author: "Kristin Watson",
-    image: "blog-bedbugs",
+    photo: "bedroomCalm",
   },
 ];
+
+export function getPost(slug: string) {
+  return blogPosts.find((p) => p.slug === slug);
+}
+
+export function formatPostDate(date: string, month: "long" | "short" = "long") {
+  // Dates are stored as calendar days; format in UTC so they never shift.
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString("en-CA", {
+    month,
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}

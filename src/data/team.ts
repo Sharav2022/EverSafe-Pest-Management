@@ -7,6 +7,9 @@ export type TeamMember = {
   social: { label: string; href: string }[];
 };
 
+// Published team profiles. Names, roles and bios must be confirmed by the
+// client; `image` and `social` are not rendered (no approved portraits or
+// profile URLs exist yet).
 export const team: TeamMember[] = [
   {
     slug: "kathryn-murphy",

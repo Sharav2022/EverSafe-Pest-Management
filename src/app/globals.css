@@ -1,60 +1,333 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Ever Safe design tokens
+   Ivory/white carry reading surfaces, forest/evergreen anchor signature
+   moments, sage supports, copper is a restrained accent only.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-forest: #123d32;
+  --color-forest-600: #1a4b3e;
+  --color-forest-500: #245c4c;
+  --color-evergreen: #102b2c;
+  --color-evergreen-900: #0b2021;
+  --color-ivory: #f6f4ee;
+  --color-ivory-200: #eeeae0;
+  --color-ivory-300: #e4dfd2;
+  --color-sage: #d8e6d7;
+  --color-sage-100: #e9f1e8;
+  --color-copper: #c77644;
+  /* Copper tuned for small text on light surfaces (4.75:1 on ivory). */
+  --color-copper-ink: #a3592c;
+  /* Copper tuned for text on evergreen (6.8:1). */
+  --color-copper-light: #e0a27a;
+  --color-charcoal: #242b29;
+  --color-muted: #5f6b66;
+  --color-line: rgb(36 43 41 / 0.12);
+  --color-line-strong: rgb(36 43 41 / 0.22);
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), "Times New Roman", serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --breakpoint-xs: 26.5rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #0b2118;
-
-  /* Brand palette sampled from the reference theme */
-  --brand-dark: #0f3125;
-  --brand-dark-2: #143a29;
-  --brand-dark-3: #1a4531;
-  --brand-ink: #0b2118;
-  --brand-lime: #c6f24c;
-  --brand-lime-dark: #a3d431;
-  --brand-cream: #f7f6ed;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --header-h: 4.75rem;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-brand-dark: var(--brand-dark);
-  --color-brand-dark-2: var(--brand-dark-2);
-  --color-brand-dark-3: var(--brand-dark-3);
-  --color-brand-ink: var(--brand-ink);
-  --color-brand-lime: var(--brand-lime);
-  --color-brand-lime-dark: var(--brand-lime-dark);
-  --color-brand-cream: var(--brand-cream);
-  --font-sans: var(--font-body);
-  --font-heading: var(--font-heading);
-  --animate-marquee: marquee 32s linear infinite;
-  --animate-marquee-fast: marquee 18s linear infinite;
-  --animate-spin-slow: spin 2.4s linear infinite;
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  body {
+    background: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-sage);
+    color: var(--color-forest);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
-@keyframes marquee {
+/* ------------------------------------------------------------------
+   Layout primitives
+   ------------------------------------------------------------------ */
+@utility shell {
+  width: 100%;
+  max-width: calc(84rem + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility shell-wide {
+  width: 100%;
+  max-width: calc(96rem + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility shell-narrow {
+  width: 100%;
+  max-width: calc(46rem + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility section-y {
+  padding-block: var(--section-y);
+}
+
+/* ------------------------------------------------------------------
+   Typography scale (fluid)
+   ------------------------------------------------------------------ */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 1.55rem + 5vw, 6.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.35rem, 1.5rem + 3.3vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+
+@utility display-md {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.45rem + 2.1vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+}
+
+@utility display-sm {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.3rem + 1.1vw, 2.15rem);
+  line-height: 1.12;
+}
+
+@utility title-md {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.375rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+@utility lede {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.65;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@utility numeral {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variant-numeric: lining-nums;
+  line-height: 0.85;
+}
+
+/* ------------------------------------------------------------------
+   Long-form article typography
+   ------------------------------------------------------------------ */
+@utility article-body {
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.8;
+  color: var(--color-charcoal);
+
+  & > * + * {
+    margin-top: 1.4em;
+  }
+
+  & > p:first-child::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 4.1em;
+    line-height: 0.82;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--color-forest);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Motion
+   Content is fully visible by default. Reveal styles only apply once the
+   head script has confirmed JavaScript is running and motion is welcome.
+   ------------------------------------------------------------------ */
+html.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 700ms var(--ease-out-soft),
+    transform 700ms var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.reveal-ready [data-reveal="fade"] {
+  transform: none;
+}
+
+html.reveal-ready [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Draws the process connector line once the timeline enters the viewport. */
+html.reveal-ready [data-reveal-line] {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1200ms var(--ease-in-out-soft) 200ms;
+}
+
+html.reveal-ready [data-reveal-line].is-revealed {
+  transform: scaleX(1);
+}
+
+/* Smooth disclosure for FAQ accordions where supported. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  details.disclosure::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 320ms var(--ease-out-soft),
+      content-visibility 320ms allow-discrete;
+  }
+
+  details.disclosure[open]::details-content {
+    block-size: auto;
+  }
+}
+
+details.disclosure > summary {
+  list-style: none;
+}
+
+details.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Utilities
+   ------------------------------------------------------------------ */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image: radial-gradient(
+      rgb(255 255 255 / 0.05) 1px,
+      transparent 1px
+    );
+    background-size: 3px 3px;
+  }
+}
+
+@utility hairline-grid {
+  background-image:
+    linear-gradient(rgb(216 230 215 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(216 230 215 / 0.07) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+@keyframes panel-in {
   from {
-    transform: translateX(0);
+    opacity: 0;
+    transform: translateY(-6px);
   }
   to {
-    transform: translateX(-50%);
+    opacity: 1;
+    transform: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.font-heading {
-  font-family: var(--font-heading), Arial, Helvetica, sans-serif;
+/* Above-the-fold entrance: movement only, never hidden, so text paints at once. */
+@keyframes rise {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
 }
 
-.bg-noise-grid {
-  background-image: linear-gradient(
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px
-    ),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
+[data-rise] {
+  animation: rise 700ms var(--ease-out-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
 }
