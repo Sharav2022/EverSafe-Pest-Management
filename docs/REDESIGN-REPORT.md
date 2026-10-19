@@ -32,7 +32,7 @@ employee or customer (credits: `src/assets/photos/CREDITS.md`).
 | Prices & inclusions | Unchanged: $49/visit, $89/month, $149/month, same features |
 | Contact form | Same five fields, same six service options, same required fields |
 | Video | Ever Safe film still plays inline (now a 8.6 MB 720p encode) |
-| Phone / email / address | Unchanged and click-to-call / mailto everywhere |
+| Phone / email / address | Phone and address unchanged; email is now info@eversafepest.com (client-confirmed inbox) |
 | Pricing FAQs, blog content, dates, authors | Preserved (see §4 for wording edits) |
 
 ## 3. Defects found and repaired (separate from the redesign)
@@ -51,18 +51,17 @@ employee or customer (credits: `src/assets/photos/CREDITS.md`).
 6. **Footer social icons linked to `#`.** Removed until real profile URLs exist.
 7. **Forced 0.9 s loading screen on every page.** Removed.
 
-### To make the forms deliver (action required before launch)
+### Form delivery
 
-Set these environment variables in the hosting dashboard to any endpoint that
-accepts a JSON `POST` (Formspree, Zapier/Make webhook, CRM intake URL):
+Contact and newsletter submissions are emailed to **info@eversafepest.com**
+through [FormSubmit](https://formsubmit.co) (no account needed). FormSubmit
+sends a one-time **"Activate Form"** email to that inbox; nothing is delivered
+until someone clicks it. Until then, visitors see the email/phone fallback, so
+enquiries are not lost.
 
-```
-CONTACT_FORM_ENDPOINT=https://…
-NEWSLETTER_ENDPOINT=https://…
-```
-
-The contact payload is `{ name, phone, email, service, message, source, submittedAt }`.
-No personal data is written to server logs.
+To use a different service later, set `CONTACT_FORM_ENDPOINT` and/or
+`NEWSLETTER_ENDPOINT` in the hosting dashboard to any URL that accepts a JSON
+`POST`; these override FormSubmit. No personal data is written to server logs.
 
 ## 4. Claims that need client verification
 

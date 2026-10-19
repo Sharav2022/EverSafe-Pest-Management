@@ -8,8 +8,8 @@ export const siteConfig = {
     "Ever Safe Pest Management provides inspection-led pest control for homes and businesses from Mississauga, Ontario — residential, commercial, termite, bed bug, rodent, mosquito and cockroach services.",
   phone: "+1 437-833-9181",
   phoneHref: "tel:+14378339181",
-  email: "hello@eversafepest.com",
-  emailHref: "mailto:hello@eversafepest.com",
+  email: "info@eversafepest.com",
+  emailHref: "mailto:info@eversafepest.com",
   address: {
     streetAddress: "2600 Skymark Ave Unit 9, Suite 104",
     addressLocality: "Mississauga",

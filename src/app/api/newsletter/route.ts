@@ -16,6 +16,7 @@ export async function POST(request: Request) {
 
   const result = await forwardSubmission("NEWSLETTER_ENDPOINT", {
     email,
+    subject: "Website newsletter sign-up",
     source: "eversafepest.com newsletter",
     submittedAt: new Date().toISOString(),
   });

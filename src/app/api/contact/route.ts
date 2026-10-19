@@ -24,6 +24,7 @@ export async function POST(request: Request) {
 
   const result = await forwardSubmission("CONTACT_FORM_ENDPOINT", {
     ...data,
+    subject: `Website enquiry: ${data.service || "General"} — ${data.name}`,
     source: "eversafepest.com contact form",
     submittedAt: new Date().toISOString(),
   });

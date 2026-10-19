@@ -1,4 +1,5 @@
 import { services } from "@/data/services";
+import { siteConfig } from "@/lib/site-config";
 
 export const serviceOptions = services.map((s) => s.title);
 
@@ -50,28 +51,44 @@ export function validateContact(input: Record<string, unknown>): {
 }
 
 /**
- * Forwards a submission as JSON to the endpoint configured in the given env
- * variable (e.g. a Formspree, Zapier or CRM webhook URL). Returns
- * "unconfigured" when no endpoint is set so the UI can offer a fallback
- * instead of pretending the message was sent.
+ * Default delivery: FormSubmit relays each submission by email to the
+ * business inbox. The first submission triggers a one-time "Activate Form"
+ * email to that inbox; until it is clicked, FormSubmit reports failure and
+ * visitors see the email/phone fallback, so no enquiry is lost.
+ */
+const DEFAULT_ENDPOINT = `https://formsubmit.co/ajax/${siteConfig.email}`;
+
+/**
+ * Forwards a submission as JSON to the endpoint in the given env variable
+ * (e.g. a Formspree, Zapier or CRM webhook URL), falling back to FormSubmit.
+ * Only reports "sent" when the endpoint confirms delivery.
  */
 export async function forwardSubmission(
   envName: "CONTACT_FORM_ENDPOINT" | "NEWSLETTER_ENDPOINT",
-  payload: Record<string, unknown>
+  payload: Record<string, unknown> & { subject: string }
 ): Promise<"sent" | "unconfigured" | "failed"> {
-  const endpoint = process.env[envName];
-  if (!endpoint) return "unconfigured";
+  const endpoint = process.env[envName] || DEFAULT_ENDPOINT;
+  const { subject, ...fields } = payload;
 
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // FormSubmit rejects requests that don't come from a web page.
+        Origin: siteConfig.url,
+        Referer: `${siteConfig.url}/contact-us`,
+      },
+      body: JSON.stringify({ ...fields, _subject: subject, _template: "table", _captcha: "false" }),
       cache: "no-store",
     });
-    if (!res.ok) {
+    // FormSubmit answers 200 with { success: "false" } when not yet activated.
+    const data = (await res.json().catch(() => null)) as { success?: unknown } | null;
+    const rejected = data?.success === false || data?.success === "false";
+    if (!res.ok || rejected) {
       // Log status only — never the visitor's personal details.
-      console.error(`[${envName}] delivery failed with status ${res.status}`);
+      console.error(`[${envName}] delivery failed with status ${res.status}${rejected ? " (rejected)" : ""}`);
       return "failed";
     }
     return "sent";
