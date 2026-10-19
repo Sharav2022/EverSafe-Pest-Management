@@ -1,10 +1,12 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { AlertCircle, ArrowRight, CheckCircle2, Loader2, Mail, Phone } from "lucide-react";
+import { AlertCircle, ArrowRight, Check, CheckCircle2, Copy, Loader2, Mail, Phone } from "lucide-react";
 import {
+  sendDelivery,
   serviceOptions,
   validateContact,
+  type Delivery,
   type ContactPayload,
   type FieldErrors,
 } from "@/lib/forms";
@@ -17,7 +19,8 @@ type Status =
   | { state: "sent" }
   | { state: "fallback"; reason: "unavailable" | "failed"; data: ContactPayload };
 
-function mailtoFor(data: ContactPayload) {
+function emailParts(data: ContactPayload) {
+  const subject = `Quote request — ${data.service || "General enquiry"}`;
   const body = [
     `Name: ${data.name}`,
     `Phone: ${data.phone}`,
@@ -26,9 +29,19 @@ function mailtoFor(data: ContactPayload) {
     "",
     data.message,
   ].join("\n");
-  return `${siteConfig.emailHref}?subject=${encodeURIComponent(
-    `Quote request — ${data.service || "General enquiry"}`
-  )}&body=${encodeURIComponent(body)}`;
+  return { subject, body };
+}
+
+function mailtoFor(data: ContactPayload) {
+  const { subject, body } = emailParts(data);
+  return `${siteConfig.emailHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+// Works for visitors whose browser has no email app set up for mailto links.
+function gmailFor(data: ContactPayload) {
+  const { subject, body } = emailParts(data);
+  const params = new URLSearchParams({ view: "cm", fs: "1", to: siteConfig.email, su: subject, body });
+  return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
 const fieldBase =
@@ -37,6 +50,7 @@ const fieldBase =
 export function ContactForm() {
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const id = useId();
 
@@ -62,6 +76,12 @@ export function ContactForm() {
         body: JSON.stringify({ ...data, company: raw.company ?? "" }),
       });
       if (res.ok) {
+        // The server validates; FormSubmit deliveries are sent from the browser.
+        const body = (await res.json().catch(() => null)) as { relay?: Delivery } | null;
+        if (body?.relay && !(await sendDelivery(body.relay))) {
+          setStatus({ state: "fallback", reason: "failed", data });
+          return;
+        }
         form.reset();
         setStatus({ state: "sent" });
         return;
@@ -134,17 +154,51 @@ export function ContactForm() {
                   : "Your message couldn't be sent just now."}
               </p>
               <p className="mt-1 text-sm text-muted">
-                Your details are still in the form below. Send them by email in
-                one click, or call us directly.
+                Your details are still in the form below. Email them to{" "}
+                <a href={siteConfig.emailHref} className="font-semibold text-forest underline underline-offset-4">
+                  {siteConfig.email}
+                </a>
+                , or call us directly.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <a
-                  href={mailtoFor(status.data)}
+                  href={gmailFor(status.data)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex min-h-11 items-center gap-2 rounded-full bg-forest px-5 text-sm font-semibold text-ivory"
                 >
                   <Mail aria-hidden="true" className="h-4 w-4" />
-                  Email these details
+                  Send with Gmail
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
+                <a
+                  href={mailtoFor(status.data)}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm font-semibold text-forest"
+                >
+                  <Mail aria-hidden="true" className="h-4 w-4" />
+                  Other email app
+                </a>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const { subject, body } = emailParts(status.data);
+                    try {
+                      await navigator.clipboard.writeText(`To: ${siteConfig.email}\nSubject: ${subject}\n\n${body}`);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2500);
+                    } catch {
+                      setCopied(false);
+                    }
+                  }}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm font-semibold text-forest"
+                >
+                  {copied ? (
+                    <Check aria-hidden="true" className="h-4 w-4" />
+                  ) : (
+                    <Copy aria-hidden="true" className="h-4 w-4" />
+                  )}
+                  {copied ? "Copied" : "Copy details"}
+                </button>
                 <a
                   href={siteConfig.phoneHref}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-5 text-sm font-semibold text-forest"

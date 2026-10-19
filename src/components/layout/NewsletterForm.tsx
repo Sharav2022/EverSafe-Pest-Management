@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
+import { sendDelivery, type Delivery } from "@/lib/forms";
 import { siteConfig } from "@/lib/site-config";
 
 type Status =
@@ -30,6 +31,12 @@ export function NewsletterForm() {
         body: JSON.stringify({ email }),
       });
       if (res.ok) {
+        // The server validates; FormSubmit deliveries are sent from the browser.
+        const data = (await res.json().catch(() => null)) as { relay?: Delivery } | null;
+        if (data?.relay && !(await sendDelivery(data.relay))) {
+          setStatus({ state: "error", message: "We couldn't complete your sign-up just now. Please try again." });
+          return;
+        }
         form.reset();
         setStatus({ state: "success" });
       } else if (res.status === 503) {

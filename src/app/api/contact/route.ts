@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { contactAutoReply, forwardSubmission, validateContact } from "@/lib/forms";
+import { buildDelivery, contactAutoReply, sendDelivery, validateContact } from "@/lib/forms";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await forwardSubmission("CONTACT_FORM_ENDPOINT", {
+  const delivery = buildDelivery("CONTACT_FORM_ENDPOINT", {
     ...data,
     subject: `Website enquiry: ${data.service || "General"} — ${data.name}`,
     autoReply: contactAutoReply,
@@ -30,10 +30,14 @@ export async function POST(request: Request) {
     submittedAt: new Date().toISOString(),
   });
 
-  if (result === "sent") return NextResponse.json({ ok: true });
-  if (result === "unconfigured") {
-    return NextResponse.json({ error: "Online messaging is unavailable." }, { status: 503 });
+  // Default (FormSubmit): validated here, sent by the visitor's browser.
+  if (!delivery.viaServer) {
+    return NextResponse.json({ ok: true, relay: { endpoint: delivery.endpoint, body: delivery.body } });
   }
+
+  if (await sendDelivery(delivery)) return NextResponse.json({ ok: true });
+  // Log the failure only — never the visitor's personal details.
+  console.error("[CONTACT_FORM_ENDPOINT] delivery failed");
   return NextResponse.json(
     { error: "We couldn't send your message just now." },
     { status: 502 }

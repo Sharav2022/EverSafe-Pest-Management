@@ -73,49 +73,53 @@ export const contactAutoReply = [
   siteConfig.url.replace(/^https?:\/\//, ""),
 ].join("\n");
 
-/**
- * Forwards a submission as JSON to the endpoint in the given env variable
- * (e.g. a Formspree, Zapier or CRM webhook URL), falling back to FormSubmit.
- * Only reports "sent" when the endpoint confirms delivery.
- */
-export async function forwardSubmission(
-  envName: "CONTACT_FORM_ENDPOINT" | "NEWSLETTER_ENDPOINT",
-  payload: Record<string, unknown> & { subject: string; autoReply?: string }
-): Promise<"sent" | "unconfigured" | "failed"> {
-  const endpoint = process.env[envName] || DEFAULT_ENDPOINT;
-  const { subject, autoReply, ...fields } = payload;
+type EndpointEnv = "CONTACT_FORM_ENDPOINT" | "NEWSLETTER_ENDPOINT";
 
+/** A ready-to-send submission: where it goes and the exact JSON body. */
+export type Delivery = { endpoint: string; body: Record<string, unknown> };
+
+/**
+ * Builds the outgoing submission. With a custom endpoint configured the
+ * server sends it; otherwise it is handed back to the browser to send to
+ * FormSubmit, which only accepts submissions made from a real web page.
+ */
+export function buildDelivery(
+  envName: EndpointEnv,
+  payload: Record<string, unknown> & { subject: string; autoReply?: string }
+): Delivery & { viaServer: boolean } {
+  const custom = process.env[envName];
+  const { subject, autoReply, ...fields } = payload;
+  return {
+    endpoint: custom || DEFAULT_ENDPOINT,
+    viaServer: Boolean(custom),
+    body: {
+      ...fields,
+      _subject: subject,
+      _template: "table",
+      _captcha: "false",
+      // FormSubmit emails this text to the address in the `email` field.
+      ...(autoReply && { _autoresponse: autoReply }),
+    },
+  };
+}
+
+/**
+ * Posts a delivery and reports whether the endpoint confirmed it. FormSubmit
+ * answers 200 with { success: "false" } when it rejects a submission.
+ * Used on the server (custom endpoints) and in the browser (FormSubmit).
+ */
+export async function sendDelivery({ endpoint, body }: Delivery): Promise<boolean> {
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // FormSubmit rejects requests that don't come from a web page.
-        Origin: siteConfig.url,
-        Referer: `${siteConfig.url}/contact-us`,
-      },
-      body: JSON.stringify({
-        ...fields,
-        _subject: subject,
-        _template: "table",
-        _captcha: "false",
-        // FormSubmit emails this text to the address in the `email` field.
-        ...(autoReply && { _autoresponse: autoReply }),
-      }),
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(body),
       cache: "no-store",
     });
-    // FormSubmit answers 200 with { success: "false" } when not yet activated.
     const data = (await res.json().catch(() => null)) as { success?: unknown } | null;
     const rejected = data?.success === false || data?.success === "false";
-    if (!res.ok || rejected) {
-      // Log status only — never the visitor's personal details.
-      console.error(`[${envName}] delivery failed with status ${res.status}${rejected ? " (rejected)" : ""}`);
-      return "failed";
-    }
-    return "sent";
+    return res.ok && !rejected;
   } catch {
-    console.error(`[${envName}] delivery failed: network error`);
-    return "failed";
+    return false;
   }
 }

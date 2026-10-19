@@ -54,10 +54,12 @@ employee or customer (credits: `src/assets/photos/CREDITS.md`).
 ### Form delivery
 
 Contact and newsletter submissions are emailed to **info@eversafepest.com**
-through [FormSubmit](https://formsubmit.co) (no account needed). FormSubmit
+through [FormSubmit](https://formsubmit.co) (no account needed). The server
+validates each submission and the visitor's browser sends it to FormSubmit,
+which rejects submissions sent from hosting servers. FormSubmit
 sends a one-time **"Activate Form"** email to that inbox; nothing is delivered
-until someone clicks it. Until then, visitors see the email/phone fallback, so
-enquiries are not lost.
+until someone clicks it. Until then, visitors see a fallback (Send with Gmail, other email app, copy details, or
+call), so enquiries are not lost.
 
 Each contact enquiry also sends the visitor a generic acknowledgement email
 (text in `contactAutoReply`, `src/lib/forms.ts`). Newsletter sign-ups get none.

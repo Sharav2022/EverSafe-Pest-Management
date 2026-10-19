@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { forwardSubmission, isEmail } from "@/lib/forms";
+import { buildDelivery, isEmail, sendDelivery } from "@/lib/forms";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -14,17 +14,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please enter a valid email address." }, { status: 422 });
   }
 
-  const result = await forwardSubmission("NEWSLETTER_ENDPOINT", {
+  const delivery = buildDelivery("NEWSLETTER_ENDPOINT", {
     email,
     subject: "Website newsletter sign-up",
     source: "eversafepest.com newsletter",
     submittedAt: new Date().toISOString(),
   });
 
-  if (result === "sent") return NextResponse.json({ ok: true });
-  if (result === "unconfigured") {
-    return NextResponse.json({ error: "Sign-up is unavailable." }, { status: 503 });
+  // Default (FormSubmit): validated here, sent by the visitor's browser.
+  if (!delivery.viaServer) {
+    return NextResponse.json({ ok: true, relay: { endpoint: delivery.endpoint, body: delivery.body } });
   }
+
+  if (await sendDelivery(delivery)) return NextResponse.json({ ok: true });
+  console.error("[NEWSLETTER_ENDPOINT] delivery failed");
   return NextResponse.json(
     { error: "We couldn't complete your sign-up just now. Please try again." },
     { status: 502 }
